@@ -4,6 +4,8 @@ const Usuario = require('../modelos/usuarios.model');
 const bcrypt = require('bcrypt-nodejs');
 const usuariosModel = require('../modelos/usuarios.model');
 
+
+//FUNCION PARA CREAR EL USUARIO PREDETERMINADO
 function usuarioDefault(req,res){
 
     let usuarioModel = new Usuario();
