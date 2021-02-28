@@ -1,0 +1,19 @@
+{
+  "name": "venta_online_primerbimestre_2021",
+  "version": "1.0.0",
+  "description": "venta_online_PrimerBimestre_2021",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlopez2019044/venta_online_PrimerBimestre_2021.git"
+  },
+  "author": "Jose Lopez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jlopez2019044/venta_online_PrimerBimestre_2021/issues"
+  },
+  "homepage": "https://github.com/jlopez2019044/venta_online_PrimerBimestre_2021#readme"
+}
