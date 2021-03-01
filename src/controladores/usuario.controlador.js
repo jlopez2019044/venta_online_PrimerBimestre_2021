@@ -118,8 +118,51 @@ function agregarUsuario(req,res) {
     
 }
 
+function registrarCliente(req,res) {
+
+    var usuarioModel =new Usuario();
+    var params = req.body;
+
+    if(params.usuario && params.password){
+
+        usuarioModel.usuario = params.usuario;
+        usuarioModel.password = params.password;
+        usuarioModel.rol = 'ROL_CLIENTE';
+
+        Usuario.find({$or: [
+            {usuario: usuarioModel.usuario}
+        ]}).exec((err,usuariosEncontrados)=>{
+
+            if(err) return console.log('Error en la peticion de usuario');
+
+            if(usuariosEncontrados && usuariosEncontrados.length>=1){
+                return res.status(500).send({mensaje: 'El usuario ya está creado'})
+            }else{
+                bcrypt.hash(usuarioModel.password,null,null,(err,passwordEncriptada)=>{
+                    usuarioModel.password = passwordEncriptada;
+                })
+
+                usuarioModel.save((err,usuarioGuardado)=>{
+                    if(err) return res.status(500).send({mensaje: 'Error al guardar el usuario'});
+
+                    if(usuarioGuardado){
+                        return res.status(200).send({usuarioGuardado});
+                    }
+
+                })
+
+            }
+
+        })
+
+    }else{
+        return res.status(500).send({mensaje: 'Necesita llenar los datos'})
+    }
+}
+
 module.exports ={
     usuarioDefault,
     agregarUsuario,
-    login
+    login,
+    registrarCliente
 }
