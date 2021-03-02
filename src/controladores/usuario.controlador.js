@@ -167,7 +167,9 @@ function editarCliente(req,res) {
 
     delete params.password;
 
-        if(idUsuario === req.user.sub || req.user.rol === 'ROL_ADMIN'){
+        if(idUsuario === req.user.sub){
+
+            delete params.rol;
 
             Usuario.findByIdAndUpdate(idUsuario,params,{new: true, useFindAndModify: false},(err,usuarioActualizado)=>{
                 if(err) return res.status(500).send({mensaje: 'Error en la peticion'})
@@ -176,7 +178,19 @@ function editarCliente(req,res) {
             })
 
         }else{
-            return res.status(500).send({mensaje: 'No posee los permisos necesarios para actualizar el usuario'})
+
+            if(req.user.rol === 'ROL_ADMIN'){
+
+                Usuario.findByIdAndUpdate(idUsuario,params,{new: true, useFindAndModify: false},(err,usuarioActualizado)=>{
+                    if(err) return res.status(500).send({mensaje: 'Error en la peticion'})
+                    if(!usuarioActualizado) return res.status(500).send({mensaje: 'No se ha podido actualizar al usuario'})
+                    return res.status(200).send({usuarioActualizado})
+                })
+
+            }else{
+                return res.status(500).send({mensaje: 'No posee los permisos necesarios para actualizar el usuario'})
+            }
+
         }
     
 
