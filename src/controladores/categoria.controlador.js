@@ -1,6 +1,7 @@
 'use strict'
 
 const Categoria = require('../modelos/categorias.model');
+const Productos = require('../modelos/productos.model');
 const bcrypt = require("bcrypt-nodejs");
 const jwt = require('../servicios/jwt');
 const usuariosModel = require('../modelos/usuarios.model');
@@ -67,7 +68,30 @@ function editarCategoria(req,res) {
     
 }
 
+function buscarPorCategoria(req,res) {
+    
+    var params = req.body;
+    var categoriaNombre = params.nombre;
+    var categoriaId
+
+    Categoria.findOne({nombre: categoriaNombre},(err,categoriaEncontrada)=>{
+        if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+        if(!categoriaEncontrada) return res.status(500).send({mensaje: 'Error al buscar la categoria'});
+
+        categoriaId = categoriaEncontrada._id;
+
+        Productos.find({idCategoria: categoriaId},(err,productosEncontrados)=>{
+            if(err) return res.status(500).send({mensaje: 'Error en la peticion'})
+            if(!productosEncontrados) return res.status(500).send({mensaje: 'Error al encontrar los productos'});
+
+            return res.status(200).send({productosEncontrados})
+        })
+
+    })
+}
+
 module.exports = {
     registrarCategoria,
-    editarCategoria
+    editarCategoria,
+    buscarPorCategoria
 }

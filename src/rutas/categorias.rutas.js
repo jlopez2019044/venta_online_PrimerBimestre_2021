@@ -12,5 +12,6 @@ const categoriasModel = require('../modelos/categorias.model');
 var api = express.Router();
 api.post('/registrarCategoria',md_autenticacion.ensureAuth,categoriaControlador.registrarCategoria);
 api.post('/editarCategoria/:idCategoria',md_autenticacion.ensureAuth,categoriaControlador.editarCategoria);
+api.post('/buscarPorCategoria',md_autenticacion.ensureAuth,categoriaControlador.buscarPorCategoria);
 
 module.exports = api;

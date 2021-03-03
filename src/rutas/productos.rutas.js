@@ -15,5 +15,7 @@ api.post('/editarProducto/:idProducto',md_autenticacion.ensureAuth,productoContr
 api.delete('/eliminarProducto/:idProducto',md_autenticacion.ensureAuth,productoControlador.eliminarProducto)
 api.get('/listarProductos',productoControlador.listarProductos);
 api.get('/buscarProductoId/:idProducto',productoControlador.buscarProductoId)
+api.post('/buscarProductoNombre',md_autenticacion.ensureAuth,productoControlador.buscarNombreProducto);
+api.get('/buscarProductosAgotados',md_autenticacion.ensureAuth,productoControlador.buscarProductosAgotados);
 
 module.exports = api;

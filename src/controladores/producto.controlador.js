@@ -120,10 +120,48 @@ function buscarProductoId(req,res) {
     
 }
 
+function buscarNombreProducto(req,res) {
+    
+    var params = req.body;
+    var nombreProducto = params.nombre;
+
+    Producto.findOne({nombre: nombreProducto},(err,productoEncontrado)=>{
+        if(err) return res.status(500).send({mensaje: 'Error en la petición'});
+
+        if(!productoEncontrado) return res.status(500).send({mensaje: 'Error en la peticion de producto'})
+
+        return res.status(200).send({productoEncontrado});
+    })
+
+}
+
+function buscarProductosAgotados(req,res) {
+    
+    if(req.user.rol === 'ROL_ADMIN'){
+        Producto.find({cantidad: 0},(err,productosAgotados)=>{
+            if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+            if(!productosAgotados) return res.status(500).send({mensaje: 'Error al encontrar los productos'})
+
+            if(productosAgotados.length==0){
+                return res.status(500).send({mensaje: 'No existen productos agotados'})
+            }else{
+                return res.status(200).send({productosAgotados});
+            }
+    
+        })
+    
+    }else{
+        return res.status(500).send({mensaje: 'No tiene los permisos para hacer esta accion'})
+    }
+
+}
+
 module.exports ={
     registrarProducto,
     editarProducto,
     eliminarProducto,
     listarProductos,
-    buscarProductoId
+    buscarProductoId,
+    buscarNombreProducto,
+    buscarProductosAgotados
 }
