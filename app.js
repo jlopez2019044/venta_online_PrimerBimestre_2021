@@ -9,6 +9,7 @@ const cors = require("cors");
 //IMPORTACION RUTAS
 const usuario_ruta = require('./src/rutas/usuarios.rutas');
 const categoria_ruta = require('./src/rutas/categorias.rutas');
+const producto_ruta = require('./src/rutas/productos.rutas');
 
 //MIDDLEWARES
 app.use(bodyParser.urlencoded({extended: false}));
@@ -20,6 +21,7 @@ app.use(cors());
 //CARGA DE RUTAS
 app.use('/api/usuarios',usuario_ruta);
 app.use('/api/categorias',categoria_ruta);
+app.use('/api/productos',producto_ruta);
 
 //EXPORTAR
 module.exports = app;
