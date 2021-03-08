@@ -1,6 +1,7 @@
 'use strict'
 
 const Usuario = require('../modelos/usuarios.model');
+const Carrito = require('../modelos/carritos.model');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../servicios/jwt');
 const usuarioModelos = require('../modelos/usuarios.model')
@@ -51,6 +52,31 @@ function login(req,res) {
             bcrypt.compare(params.password,usuarioEncontrado.password,(err,passCorrecta)=>{
 
                 if(passCorrecta){
+
+                    Usuario.findOne({usuario: params.usuario},(err,usuarioParaCarrito)=>{
+
+                        if(usuarioParaCarrito.rol === 'ROL_CLIENTE'){
+
+                            Carrito.findOne({idUsuario: usuarioParaCarrito._id},(err,carritoParaUsuario)=>{
+
+                                if(!carritoParaUsuario){
+    
+                                    let carritoModel = new Carrito();
+    
+                                    carritoModel.idUsuario = usuarioParaCarrito._id;
+    
+                                    carritoModel.save((err,carritoGuardado)=>{
+                                        if(err) return res.status(500).send({mensaje:  'Error al crear el carrito del usuario'});
+                                    })
+    
+                                }
+    
+                            })
+
+                        }
+
+                    })
+
                     if(params.obtenerToken ==='true'){
                         return res.status(200).send({
                             token: jwt.createToken(usuarioEncontrado)
@@ -158,7 +184,7 @@ function registrarCliente(req,res) {
     }else{
         return res.status(500).send({mensaje: 'Necesita llenar los datos'})
     }
-}
+} 
 
 function editarCliente(req,res) {
     
@@ -201,6 +227,10 @@ function eliminarCliente(req,res) {
     var idUsuario = req.params.idUsuario;
 
     if(idUsuario === req.user.sub || req.user.rol === 'ROL_ADMIN'){
+
+        Carrito.findOneAndDelete({idUsuario:idUsuario},(err,carritoEliminado)=>{
+            if(err) return res.status(500).send({mensaje: 'Error al eliminar el carrito'})
+        })
 
         Usuario.findByIdAndDelete(idUsuario,(err,usuarioEliminado)=>{
             if(err) return res.status(500).send({mensaje: 'Error en la petición de eliminar'})
