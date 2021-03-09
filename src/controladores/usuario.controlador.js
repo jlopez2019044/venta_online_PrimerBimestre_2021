@@ -4,7 +4,8 @@ const Usuario = require('../modelos/usuarios.model');
 const Carrito = require('../modelos/carritos.model');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../servicios/jwt');
-const usuarioModelos = require('../modelos/usuarios.model')
+const usuarioModelos = require('../modelos/usuarios.model');
+const Factura = require('../modelos/facturas.model');
 
 
 //FUNCION PARA CREAR EL USUARIO PREDETERMINADO
@@ -53,8 +54,11 @@ function login(req,res) {
 
                 if(passCorrecta){
 
+
+                    //SE BUSCA SI EL USUARIO LOGEADO TIENE UN CARRITO
                     Usuario.findOne({usuario: params.usuario},(err,usuarioParaCarrito)=>{
 
+                        //SE VERIFICA SI EL USUARIO ES CLIENTE, DE NO SERLO NO SE CREARÁ CARRITO
                         if(usuarioParaCarrito.rol === 'ROL_CLIENTE'){
 
                             Carrito.findOne({idUsuario: usuarioParaCarrito._id},(err,carritoParaUsuario)=>{
@@ -64,7 +68,8 @@ function login(req,res) {
                                     let carritoModel = new Carrito();
     
                                     carritoModel.idUsuario = usuarioParaCarrito._id;
-    
+                                    
+                                    //SE CREA EL CARRITO
                                     carritoModel.save((err,carritoGuardado)=>{
                                         if(err) return res.status(500).send({mensaje:  'Error al crear el carrito del usuario'});
                                     })
@@ -78,9 +83,37 @@ function login(req,res) {
                     })
 
                     if(params.obtenerToken ==='true'){
-                        return res.status(200).send({
-                            token: jwt.createToken(usuarioEncontrado)
-                        });
+
+                        //SE BUSCA UN USUARIO PARA TRAER COMPRAS DE FACTURA
+                        Usuario.findOne({usuario: params.usuario},(err,usuarioHayado)=>{
+
+                            //SI EL USUARIO ES ADMIN SOLO RETORNARA TOKEN
+                            if(usuarioHayado.rol === 'ROL_ADMIN'){
+
+                                return res.status(200).send({
+                                    token: jwt.createToken(usuarioEncontrado)
+                                });
+
+
+                            }else{
+
+                                //SI EL USUARIO ES CLIENTE RETORNARA TOKEN Y SUS COMPRAS REALIZADAS POR MEDIO DE LA FACTURA
+                                var usuarioIdFactura = usuarioHayado._id;
+
+                                Factura.find({idUsuario: usuarioIdFactura},(err,comprasRealizadas)=>{
+    
+                                    if(err) return res.status(500).send({mensaje: 'Error al encontrar las compras del usuario'});
+    
+                                    return res.status(200).send({
+                                        token: jwt.createToken(usuarioEncontrado),
+                                        comprasRealizadas
+                                    });
+    
+                                })
+
+                            }
+
+                        })
                     }else{
                         usuarioEncontrado.password = undefined;
                         return res.status(200).send({usuarioEncontrado})
