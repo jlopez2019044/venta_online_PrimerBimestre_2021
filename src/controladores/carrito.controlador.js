@@ -55,7 +55,6 @@ function agregarCarrito(req,res){
 
 }
 
-
 module.exports = {
-    agregarCarrito
+    agregarCarrito,
 }

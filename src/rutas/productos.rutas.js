@@ -11,7 +11,7 @@ var productosModel = require('../modelos/productos.model');
 //RUTAS
 var api = express.Router();
 api.post('/registrarProducto',md_autenticacion.ensureAuth,productoControlador.registrarProducto);
-api.post('/editarProducto/:idProducto',md_autenticacion.ensureAuth,productoControlador.editarProducto);
+api.put('/editarProducto/:idProducto',md_autenticacion.ensureAuth,productoControlador.editarProducto);
 api.delete('/eliminarProducto/:idProducto',md_autenticacion.ensureAuth,productoControlador.eliminarProducto)
 api.get('/listarProductos',productoControlador.listarProductos);
 api.get('/buscarProductoId/:idProducto',productoControlador.buscarProductoId)
