@@ -24,6 +24,25 @@ function crearFactura(req,res) {
             facturaModel.productos = carritoEncontrado.productos;
             facturaModel.idUsuario = carritoEncontrado.idUsuario;
 
+            //SE DESCUENTA DE LOS PRODUCTOS
+            for (let i = 0; i < carritoEncontrado.productos.length; i++) {
+
+                var productoIterado = carritoEncontrado.productos[i].idProductos;
+
+                Producto.findById(productoIterado,(err,productoRestado)=>{
+    
+                        var productoCantidadNuevo = productoRestado.cantidad - carritoEncontrado.productos[i].cantidad;
+                        var popularidadNueva = productoRestado.popularidad+1;
+
+                        Producto.updateMany({_id:productoIterado},{cantidad: productoCantidadNuevo,popularidad: popularidadNueva},
+                        (err,productoConCantidadNueva)=>{
+                            if(err) return res.status(500).send({mensaje: 'Error al descontar los productos del stock'})
+                        })
+    
+                })
+                    
+            }
+
             //SE ELIMINA EL CARRITO EXISTENTE, ASI LOS DATOS SE BORRAN TOTALMENTE
             Carrito.findOneAndDelete({idUsuario: req.user.sub},(err,carritoNuevo)=>{
                 if(err) return res.status(500).send({mensaje: 'Error al eliminar carrito'});
@@ -45,7 +64,7 @@ function crearFactura(req,res) {
                 if(!facturaGuardada) return res.status(500).send({mensaje: 'Error al guardar la factura'})
                 return res.status(500).send({facturaGuardada});
             })
-    
+
     
         })
 
