@@ -181,6 +181,36 @@ function controlStock(req,res) {
     
 }
 
+function productosMasVendidos(req,res) {
+
+    Producto.find((err,productosVendidos)=>{
+
+        var productosPopulares=productosVendidos;
+
+        if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+
+        if(!productosVendidos) return res.status(500).send({mensaje: 'Error al encontrar los productos mas vendidos'})
+
+        for (let i = 0; i < productosVendidos.length-1; i++) {
+            for (let j = 0; j < productosVendidos.length-1; j++) {
+                if(productosPopulares[j].popularidad<productosPopulares[j+1].popularidad){
+
+                    var aux = productosPopulares[j];
+                    productosPopulares[j] = productosPopulares[j+1]
+                    productosPopulares[j+1] = aux;
+
+                }
+                
+            }
+            
+        }
+
+        return res.status(500).send({productosPopulares});
+
+    })
+    
+}
+
 module.exports ={
     registrarProducto,
     editarProducto,
@@ -189,5 +219,6 @@ module.exports ={
     buscarProductoId,
     buscarNombreProducto,
     buscarProductosAgotados,
-    controlStock
+    controlStock,
+    productosMasVendidos
 }
