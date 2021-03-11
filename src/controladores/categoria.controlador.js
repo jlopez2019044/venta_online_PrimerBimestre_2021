@@ -101,8 +101,6 @@ function eliminarCategoria(req,res) {
 
         if(categoriaEncontradaSi){
             
-            crearCategoriaDefault;
-
             Categoria.findOne({nombre: 'Default'},(err,categoriaEncontradaDefault)=>{
 
 
@@ -172,5 +170,6 @@ module.exports = {
     editarCategoria,
     buscarPorCategoria,
     eliminarCategoria,
-    obtenerCategorias
+    obtenerCategorias,
+    crearCategoriaDefault
 }
