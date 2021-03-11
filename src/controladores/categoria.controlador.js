@@ -155,9 +155,22 @@ function crearCategoriaDefault(req,res) {
 
 }
 
+function obtenerCategorias(req,res) {
+
+    Categoria.find((err,categoriasEncontradas)=>{
+        if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+        if(!categoriasEncontradas) return res.status(500).send({mensaje: 'Error al buscar categorias'});
+
+        return res.status(200).send({categoriasEncontradas});
+
+    })
+    
+}
+
 module.exports = {
     registrarCategoria,
     editarCategoria,
     buscarPorCategoria,
-    eliminarCategoria
+    eliminarCategoria,
+    obtenerCategorias
 }

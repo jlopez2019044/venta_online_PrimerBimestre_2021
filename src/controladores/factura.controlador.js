@@ -83,7 +83,7 @@ function facturasPorUsuario(req,res) {
             if(!facturasEncontradas) return res.status(500).send({mensaje: 'El usuario no tiene facturas'});
             
             return res.status(200).send({facturasEncontradas});
-        })
+        }).populate('productos.idProductos','nombre precio')
 
     }else{
         return res.status(500).send({mensaje: 'No posee los permisos suficientes para esta accion'})
@@ -91,7 +91,55 @@ function facturasPorUsuario(req,res) {
     
 }
 
+function buscarProductosDeFactura(req,res) {
+    
+    var facturaId = req.params.idFactura;
+
+    if(req.user.rol === 'ROL_ADMIN'){
+
+        Factura.findById(facturaId,(err,facturaEncontrada)=>{
+            if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+            if(!facturaEncontrada) return res.status(500).send({mensaje: 'No existe la factura'});
+    
+            return res.status(200).send({facturaEncontrada});
+    
+        }).populate('productos.idProductos','nombre precio')
+
+    }else{
+        return res.status(500).send({mensaje: 'No tiene los permisos necesarios para realizar dicha accion'})
+    }
+
+}
+
+function facturaDetallada(req,res) {
+
+    var facturaId = req.params.idFactura;
+
+    if(req.user.rol === 'ROL_CLIENTE'){
+
+        Factura.findById(facturaId,(err,facturaEncontrada)=>{
+            if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+            if(!facturaEncontrada) return res.status(500).send({mensaje: 'No existe la factura'});
+
+            if(facturaEncontrada.idUsuario == req.user.sub){
+
+                return res.status(200).send({facturaEncontrada});
+
+            }else{
+                return res.status(500).send({mensaje: 'Esta factura no es de usted'});
+            }
+    
+        }).populate('productos.idProductos','nombre precio')
+
+    }else{
+        return res.status(500).send({mensaje: 'Los administradores no pueden acceder a esta funcion'})
+    }
+    
+}
+
 module.exports = {
     crearFactura,
-    facturasPorUsuario
+    facturasPorUsuario,
+    buscarProductosDeFactura,
+    facturaDetallada
 }

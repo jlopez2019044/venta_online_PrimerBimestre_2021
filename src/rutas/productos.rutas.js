@@ -17,5 +17,6 @@ api.get('/listarProductos',productoControlador.listarProductos);
 api.get('/buscarProductoId/:idProducto',productoControlador.buscarProductoId)
 api.post('/buscarProductoNombre',md_autenticacion.ensureAuth,productoControlador.buscarNombreProducto);
 api.get('/buscarProductosAgotados',md_autenticacion.ensureAuth,productoControlador.buscarProductosAgotados);
+api.get('/controlProductosStock/:idProducto',md_autenticacion.ensureAuth,productoControlador.controlStock);
 
 module.exports = api;

@@ -14,5 +14,6 @@ api.post('/registrarCategoria',md_autenticacion.ensureAuth,categoriaControlador.
 api.put('/editarCategoria/:idCategoria',md_autenticacion.ensureAuth,categoriaControlador.editarCategoria);
 api.post('/buscarPorCategoria',md_autenticacion.ensureAuth,categoriaControlador.buscarPorCategoria);
 api.delete('/eliminarCategoria/:idCategoria',md_autenticacion.ensureAuth,categoriaControlador.eliminarCategoria);
+api.get('/obtenerCategorias',md_autenticacion.ensureAuth,categoriaControlador.obtenerCategorias);
 
 module.exports = api;

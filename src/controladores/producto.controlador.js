@@ -156,6 +156,31 @@ function buscarProductosAgotados(req,res) {
 
 }
 
+function controlStock(req,res) {
+
+    var productoId = req.params.idProducto;
+
+    if(req.user.rol === 'ROL_ADMIN'){
+
+        Producto.findById(productoId,(err,productoEncontrado)=>{
+            if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+            if(!productoEncontrado) return res.status(500).send({mensaje: 'Error al encontrar el producto'});
+    
+            if(productoEncontrado.cantidad >=1){
+                return res.status(200).send({mensaje: 'Existen productos en el stock'});
+            }else{
+                return res.status(200).send({mensaje: 'No existen productos en el stock'});
+            }
+    
+    
+        })
+
+    }else{
+        return res.status(500).send({mensaje: 'No tiene los permisos suficientes para realizar esta accion'})
+    }
+    
+}
+
 module.exports ={
     registrarProducto,
     editarProducto,
@@ -163,5 +188,6 @@ module.exports ={
     listarProductos,
     buscarProductoId,
     buscarNombreProducto,
-    buscarProductosAgotados
+    buscarProductosAgotados,
+    controlStock
 }
