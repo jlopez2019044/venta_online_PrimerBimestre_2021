@@ -100,6 +100,8 @@ function eliminarCategoria(req,res) {
     Categoria.findById(categoriaId,(err,categoriaEncontradaSi)=>{
 
         if(categoriaEncontradaSi){
+
+            if(categoriaEncontradaSi.nombre == 'Default') return res.status(500).send({mensaje: 'No se puede eliminar la categoria default'});
             
             Categoria.findOne({nombre: 'Default'},(err,categoriaEncontradaDefault)=>{
 
@@ -141,11 +143,12 @@ function crearCategoriaDefault(req,res) {
         {nombre: categoriaModel.nombre}
     ]}).exec((err, categoriasEncontradas)=>{
 
-        if(err) return res.status(500).send({mensaje: 'Error en la peticion de la categoria por defecto'});
+        if(err) return console.log('Error en la peticion');
         if(categoriasEncontradas && categoriasEncontradas.length<1){
 
             categoriaModel.save((err,categoriaGuardada)=>{
-                if(err) return res.status(500).send({mensaje: 'Error al guardar la categoria por defecto'});
+                if(err) return console.log('Error al crear la categoria por defecto');
+                return console.log('Se creó la categoria '+categoriaGuardada)
             })
 
         }
