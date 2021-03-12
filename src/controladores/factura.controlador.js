@@ -141,5 +141,5 @@ module.exports = {
     crearFactura,
     facturasPorUsuario,
     buscarProductosDeFactura,
-    facturaDetallada,
+    facturaDetallada
 }
